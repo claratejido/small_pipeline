@@ -1,9 +1,8 @@
-
-#!/usr/bin/python
 import os
 import re
 import matplotlib.pyplot as plt
 import pandas as pd
+from pathlib import Path
 # Open file
 #input_file = open(sys.argv[1],"r")
 input_file = open("fasta_example.fasta","rt")
@@ -14,6 +13,11 @@ occ = {}
 # Read FASTA records
 index=0
 sequence_part_files = []
+
+# Create data folder if it does not exist
+data_folder = Path("./data/")
+data_folder.mkdir(exist_ok=True)
+
 while True:
     tag = input_file.readline()
     if not tag: # Read TAG or end-of-file
