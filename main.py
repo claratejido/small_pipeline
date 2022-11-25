@@ -65,10 +65,13 @@ plt.show()
 #Reference genome:
 #https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/146/045/GCF_000146045.2_R64/GCF_000146045.2_R64_genomic.fna.gz
 
+# Generate BWA index from reference genome
+os.system(f"bwa index GCF_000146045.2_R64_genomic.fna")
+
 # Creating a SAM file alignment/fasta file and store them in data folder
 sam_files = []
 for i,fasta in enumerate(sequence_part_files):
-    command = "bwa mem /home/clara/Descargas/bwa-0.7.17/bwa-0.7.17/bwakit/GCF_000146045.2_R64_genomic.fna"
+    command = "bwa mem GCF_000146045.2_R64_genomic.fna"
     fasta_part = "./data/" + fasta
     sam_file_name = f"./data/aln-se{i}.sam"
     os.system(f"{command} {fasta_part} > {sam_file_name}")
