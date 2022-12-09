@@ -1,11 +1,13 @@
 import os
 import re
+import sys
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import pandas as pd
-from pathlib import Path
+
 # Open file
-#input_file = open(sys.argv[1],"r")
-input_file = open("fasta_example.fasta","rt")
+input_file = open(sys.argv[1], "r")
 
 
 # Declare empty dictionary
