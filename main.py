@@ -13,7 +13,7 @@ input_file = open(sys.argv[1], "r")
 # Declare empty dictionary
 occ = {}
 # Read FASTA records
-index=0
+index = 0
 sequence_part_files = []
 
 # Create data folder if it does not exist
@@ -63,6 +63,9 @@ ax.set_title("Kmer frequency")
 ax.set_ylabel("Counts")
 ax.set_xticklabels(kmer_labels)
 plt.show()
+histogram_filename = "kmer_frequencies.png"
+plt.savefig(histogram_filename)
+print(f"Kmer histogram saved in file: {histogram_filename}")
 
 #Reference genome:
 #https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/146/045/GCF_000146045.2_R64/GCF_000146045.2_R64_genomic.fna.gz
