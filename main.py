@@ -6,6 +6,14 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
+file_suffix = Path(sys.argv[1]).suffix
+if file_suffix == ".fasta":
+    file_type = "FASTA"
+elif file_suffix == ".fastq":
+    file_type = "FASTQ"
+else:
+    raise ValueError("File type not supported, only FASTA or FASTQ files are supported")
+
 # Open file
 input_file = open(sys.argv[1], "r")
 
@@ -27,8 +35,13 @@ while True:
     # Read sequence
     sequence_raw = input_file.readline()
     sequence = sequence_raw.rstrip("\n").upper()
+    if file_type == "FASTQ":
+        input_file.readline()  # Skip line with "+"
+        quality = input_file.readline().rstrip("\n")  # Read quality
     if len(sequence) > 20:
         trimmed_sequence = sequence[:-20]
+        if file_type == "FASTQ":
+            trimmed_quality = quality[:-20]
     else:
         trimmed_sequence = ""
         print("No sequence written as sequence is shorter than 20 nucleotides")
@@ -38,10 +51,12 @@ while True:
         if kmer not in occ:
             occ[kmer] = 0
         occ[kmer] += 1
-    output_file_name = f"sequences.{index}.fasta"
+    output_file_name = f"sequences.{index}{file_suffix}"
     output_file_path = "./data/" + output_file_name
     output_file = open(output_file_path, "wt")
-    output_file.write("%s%s" % (tag, trimmed_sequence))
+    output_file.write(f"{tag}{trimmed_sequence}\n")
+    if file_type == "FASTQ":
+        output_file.write(f"+\n{trimmed_quality}\n")
     output_file.close()
     sequence_part_files.append(output_file_name)
     index += 1
