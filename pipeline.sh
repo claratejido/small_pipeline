@@ -6,6 +6,8 @@ declare -A occ
 # Create data folder if it does not exist
 data_folder="./data/"
 mkdir -p "$data_folder"
+# Clear data folder, in case there is old data
+rm $data_folder*
 
 # Read FASTA records from input file and count 3-mer occurrences
 index=0
@@ -31,7 +33,7 @@ while IFS='' read -r tag || [[ -n "$tag" ]]; do
   # Write FASTA record to file
   output_file_name="sequences.${index}.fasta"
   output_file_path="$data_folder$output_file_name"
-  echo -e "$tag$trimmed_sequence" > "$output_file_path"
+  echo -e "$tag\n$trimmed_sequence" > "$output_file_path"
   index=$((index+1))
 done < "$1"
 
@@ -44,7 +46,8 @@ done
 bwa index GCF_000146045.2_R64_genomic.fna
 
 # Align FASTA files to reference genome and output SAM files
-for fasta_file in "$data_folder"*; do
+for fasta_file in "$data_folder"*.fasta; do
+  echo "Writing to file: ${fasta_file%.*}.sam"
   bwa mem GCF_000146045.2_R64_genomic.fna "$fasta_file" > "${fasta_file%.*}.sam"
 done
 
@@ -56,11 +59,13 @@ for sam_file in "$data_folder"*.sam; do
     continue
   fi
   # Append the content of the SAM file to the merged SAM file
-  cat "$sam_file" >> "$merged_sam_file"
+  cat "$sam_file" | grep -v '^@' >> "$merged_sam_file"
 done
 
 # Sort merged SAM file by chromosome and position
 sort -k 3,3 -k 4,4n "$merged_sam_file" > "${merged_sam_file%.*}_sorted.sam"
 
 # Count the number of aligned bases in the SAM file
-aligned_count=$(grep -v '^@' "${merged_sam_file%.*}_sorted.sam" | awk -F 'M' '{sum += $1} END {print sum}')
+aligned_count=$(grep -v '^@' "${merged_sam_file%.*}_sorted.sam" | cut -f6 | grep -oP "(\d+)M" | tr -d "M" | awk '{sum += $1} END {print sum}')
+
+echo "Total aligned count: $aligned_count"
