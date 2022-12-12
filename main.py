@@ -65,8 +65,11 @@ while True:
 # Close files
 input_file.close()
 
+# Print kmer summary to terminal
 print(occ)
 
+
+# Generate kmer historgram plot
 kmer_freq = occ.values()
 kmer_labels = occ.keys()
 
@@ -80,6 +83,10 @@ plt.show()
 histogram_filename = "kmer_frequencies.png"
 plt.savefig(histogram_filename)
 print(f"Kmer histogram saved in file: {histogram_filename}")
+
+##############################################
+# BWA alignment and SAM file generation
+##############################################
 
 # Reference genome:
 # https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/146/045/GCF_000146045.2_R64/GCF_000146045.2_R64_genomic.fna.gz
@@ -96,7 +103,7 @@ for i, file in enumerate(sequence_part_files):
     os.system(f"{command} {file_part} > {sam_file_name}")
     sam_files.append(sam_file_name)
 
-# Merging sam files in a unique sam
+# Merge sam files
 merged_sam_file = open("merged.sam", "wt")
 
 for sam in sam_files:
@@ -117,11 +124,12 @@ for line in merged_sam_file:
 
 merged_sam_file.close()
 
-sam_lines.sort(key=lambda x: (x[2], x[3]))
+
 # sort by third field (chr) and fourth field (position)
+sam_lines.sort(key=lambda x: (x[2], x[3]))
 
+# Count aligned bases from CIGARs and write sorted sam file
 aligned_count = 0
-
 for list in sam_lines:
     cigar = list[5]
     match = re.search(

@@ -11,14 +11,13 @@ rm $data_folder*
 
 filename=$1
 extension="${filename##*.}"
-echo $extension
+echo "Detected file type is :$extension"
 
 if [[ "$extension" == "fastq" ]]; then
   IS_FASTQ=1
 else
   IS_FASTQ=0
 fi
-echo "Is fastq is : $IS_FASTQ"
 
 # Read FASTA records from input file and count 3-mer occurrences
 index=0
