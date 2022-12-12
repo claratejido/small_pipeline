@@ -26,7 +26,7 @@ while True:
         break
     # Read sequence
     sequence_raw = input_file.readline()
-    sequence = sequence_raw.rstrip("\n")
+    sequence = sequence_raw.rstrip("\n").upper()
     if len(sequence) > 20:
         trimmed_sequence = sequence[:-20]
     else:
