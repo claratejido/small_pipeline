@@ -66,12 +66,12 @@ done < "$1"
 #done
 
 # Generate BWA index from reference genome
-bwa index GCF_000146045.2_R64_genomic.fna
+./bwa/bwa index GCF_000146045.2_R64_genomic.fna
 
 # Align files to reference genome and output SAM files
 for file in "$data_folder"*.$extension; do
   echo "Writing to file: ${file%.*}.sam"
-  bwa mem GCF_000146045.2_R64_genomic.fna "$file" > "${file%.*}.sam"
+  ./bwa/bwa mem GCF_000146045.2_R64_genomic.fna "$file" > "${file%.*}.sam"
 done
 
 # Merge SAM files into a single file
