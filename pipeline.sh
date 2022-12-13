@@ -92,3 +92,8 @@ sort -k 3,3 -k 4,4n "$merged_sam_file" > "${merged_sam_file%.*}_sorted.sam"
 aligned_count=$(grep -v '^@' "${merged_sam_file%.*}_sorted.sam" | cut -f6 | grep -oP "(\d+)M" | tr -d "M" | awk '{sum += $1} END {print sum}')
 
 echo "Total aligned count: $aligned_count"
+
+echo "Merged and sorted file is: merged_sorted.sam"
+mv data/merged_sorted.sam .
+echo "Cleaning up intermediary files"
+rm data/*

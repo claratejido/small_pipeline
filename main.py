@@ -145,3 +145,6 @@ for list in sam_lines:
 sorted_merged_sam_file.close()
 
 print(f"{aligned_count} bases aligned")
+
+print("Removing intermediary files")
+os.system("rm ./data/*")
